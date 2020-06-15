@@ -55,14 +55,26 @@ echo $aluno;
 
 // ==============================================================
 
+/*
+// Alterar um usuario
+$usuario = new Usuario();
+$usuario->loadById(10);
+echo $usuario;
+$usuario->update("Aluna", "zenhasr");
+echo $usuario
+*/
+
+// ==============================================================
+
+//deletar
+
 $usuario = new Usuario();
 
-$usuario->loadById(10);
+$usuario->loadById(5);
 
 echo $usuario;
 
-$usuario->update("Aluna", "zenhasr");
+$usuario->delete();
 
-echo $usuario
-
+echo $usuario;
 ?>
