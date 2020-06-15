@@ -46,12 +46,8 @@ class Usuario {
         ));
 
         if(count($result) > 0) {
-            $row = $result[0];
 
-            $this->setId($row['id']);
-            $this->setDeslogin($row['deslogin']);
-            $this->setDesenha($row['desenha']);
-            $this->setDtCadastro(new DateTime($row['dtcadastro']));
+            $this->setData($result[0]);
 
         }
     }
@@ -80,16 +76,53 @@ class Usuario {
         ));
 
         if(count($result) > 0) {
-            $row = $result[0];
 
-            $this->setId($row['id']);
-            $this->setDeslogin($row['deslogin']);
-            $this->setDesenha($row['desenha']);
-            $this->setDtCadastro(new DateTime($row['dtcadastro']));
+            $this->setData($result[0]);
 
         }else{
             throw new Exception("Login e/ou senha invalidos!!!");
         }
+    }
+
+    public function setData($data){
+
+            $this->setId($data['id']);
+            $this->setDeslogin($data['deslogin']);
+            $this->setDesenha($data['desenha']);
+            $this->setDtCadastro(new DateTime($data['dtcadastro']));
+    }
+
+    public function insert(){
+        $sql = new Sql();
+
+        $results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
+            ':LOGIN'=>$this->getDeslogin(),
+            ':PASSWORD'=>$this->getDesenha()
+        ));
+
+        if (count($results) > 0 ){
+            $this->setData($results[0]);
+        }
+    }
+
+    public function update($login, $password){
+
+        $this->setDeslogin($login);
+        $this->setDesenha($password);
+
+        $sql = new Sql();
+
+        $sql->query("UPDATE tb_usuario SET deslogin = :LOGIN, desenha = :PASSWORD WHERE id= :ID", array(
+            ':LOGIN'=>$this->getDeslogin(),
+            ':PASSWORD'=>$this->getDesenha(),
+            ':ID'=>$this->getId()
+        ));
+
+    }
+
+    public function __construct($login ="", $password = "") {
+        $this->setDeslogin($login);
+        $this->setDesenha($password);
     }
 
     public function __toString(){
@@ -100,6 +133,8 @@ class Usuario {
             "dtcadastro"=>$this->getDtCadastro()->format("d/m/Y H:i:s")
         ));
     }
+
+
 
 }
 
