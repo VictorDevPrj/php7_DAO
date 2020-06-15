@@ -55,6 +55,42 @@ class Usuario {
 
         }
     }
+    //metodos estaticos nao precisa instanciar pode chamar DIRETO,
+    //caso não tenha $this-> dentro do escopo do metodo
+    public static function getList(){ 
+        $sql = new Sql();
+
+        return $sql->select("SELECT * FROM tb_usuario ORDER BY deslogin;");
+
+    }
+
+    public static function search($login){
+        $sql = new Sql();
+        return $sql->select("SELECT * FROM tb_usuario WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
+            ':SEARCH'=>"%".$login."%"
+        ));
+    }
+
+    public function login($login, $password){
+        $sql = new Sql();
+
+        $result = $sql->select("SELECT * FROM tb_usuario WHERE deslogin = :LOGIN AND desenha = :PASSWORD", array(
+            ":LOGIN"=>$login,
+            ":PASSWORD"=>$password
+        ));
+
+        if(count($result) > 0) {
+            $row = $result[0];
+
+            $this->setId($row['id']);
+            $this->setDeslogin($row['deslogin']);
+            $this->setDesenha($row['desenha']);
+            $this->setDtCadastro(new DateTime($row['dtcadastro']));
+
+        }else{
+            throw new Exception("Login e/ou senha invalidos!!!");
+        }
+    }
 
     public function __toString(){
         return json_encode(array(
